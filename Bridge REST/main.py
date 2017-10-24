@@ -64,7 +64,7 @@ def main():
     print(adrielReports)
 
     ## Name all of the reports based on label
-    for report, i in enumerate(adrielReports):
+    for i, report in enumerate(adrielReports):
         if 'Full Student List' in report['label']:
             fullStudent = report
         elif 'Archived Events' in report['label']:
