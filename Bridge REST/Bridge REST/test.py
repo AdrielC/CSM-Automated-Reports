@@ -1,9 +1,6 @@
-### Conda env for this is REST. Use $ source activate REST
-import sys
-if sys.version_info[0] < 3:
-    from StringIO import StringIO
-else:
-    from io import StringIO
+### Conda env for this is REST. Use > source activate REST
+### Install the following into the environment: pip install flask flask-jsonpify flask-sqlalchemy flask-restful
+
 import requests
 import setup as mongler
 import pandas as pd
@@ -55,8 +52,11 @@ def RunReport(reportID, headers, payload):
             break
     ## Once the report is run and completed, get the report run data
     request = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/data' %reportID, headers=headers, params=payload)
-    TMPDATA=StringIO(request.text)
-    return pd.read_csv(TMPDATA)
+    df = pd.read_json(request.text)
+
+    ## Use row 1 as the header for the column names and then drop the row
+    df.columns = df.iloc[0]
+    return df.reindex(df.index.drop(0))
 
 ## This Main function will run all the desired reports given a certain keyword
 def main():
@@ -65,13 +65,13 @@ def main():
     print(adrielReports)
 
     ## Name all of the reports based on label
-    for i, report in enumerate(adrielReports):
-        if 'Full Student List' in report['label']:
-            fullStudent = report
-        elif 'Archived Events' in report['label']:
-            archivedAttendees = report
-        elif 'Non-archived' in report['label']:
-            nonArchivedEvents = report
+    for i in len(adrielReports):
+        if 'Full Student List' in adrielReports[i]['label']:
+            fullStudent = adrielReports[i]
+        elif 'Archived Events' in adrielReports[i]['label']:
+            archivedAttendees = adrielReports[i]
+        elif 'Non-archived' in adrielReports[i]:
+            nonArchivedEvents = adrielReports[i]
         else:
             print("Named %n reports" %(i +1))
             break
@@ -83,10 +83,9 @@ def main():
     attendeeReport2 = RunReport(nonArchivedEvents['id'], headers, payload)
 
     ## Append the attendee reports and merge
-    attendeeReport3 = attendeeReport.append(attendeeReport2)
-    # attendeeReport = attendeeReport.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
-    attendeeReport3.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
-    studentReport.to_csv('~/MAIN/BCC/Club data/studentReport.csv', index = False)
+    attendeeReport = attendeeReport.append(attendeeReport2)
+    attendeeReport = attendeeReport.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
+    attendeeReport.to_csv(path_of_buf = '~/MAIN/BCC/Club\ data/attendeeReport.csv')
 
 if __name__ == "__main__":
     main()
