@@ -51,11 +51,8 @@ def RunReport(reportID, headers, payload):
             break
     ## Once the report is run and completed, get the report run data
     request = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/data' %reportID, headers=headers, params=payload)
-    df = pd.read_json(request.text, lines = True)
-
-    ## Use row 1 as the header for the column names and then drop the row
-    df.columns = df.iloc[0]
-    return df.reindex(df.index.drop(0))
+    TMPDATA=StringIO(request.text)
+    return pd.read_csv(TMPDATA)
 
 ## This Main function will run all the desired reports given a certain keyword
 def main():
