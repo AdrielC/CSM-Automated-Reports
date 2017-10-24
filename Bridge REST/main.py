@@ -1,5 +1,4 @@
-### Conda env for this is REST. Use > source activate REST
-### Install the following into the environment: pip install flask flask-jsonpify flask-sqlalchemy flask-restful
+### Conda env for this is REST. Use $ source activate REST
 
 import requests
 import setup as mongler
@@ -65,13 +64,13 @@ def main():
     print(adrielReports)
 
     ## Name all of the reports based on label
-    for i in len(adrielReports):
-        if 'Full Student List' in adrielReports[i]['label']:
-            fullStudent = adrielReports[i]
-        elif 'Archived Events' in adrielReports[i]['label']:
-            archivedAttendees = adrielReports[i]
-        elif 'Non-archived' in adrielReports[i]:
-            nonArchivedEvents = adrielReports[i]
+    for report, i in enumerate(adrielReports):
+        if 'Full Student List' in report['label']:
+            fullStudent = report
+        elif 'Archived Events' in report['label']:
+            archivedAttendees = report
+        elif 'Non-archived' in report['label']:
+            nonArchivedEvents = report
         else:
             print("Named %n reports" %(i +1))
             break
