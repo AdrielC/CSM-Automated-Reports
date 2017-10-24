@@ -1,5 +1,9 @@
 ### Conda env for this is REST. Use $ source activate REST
-
+import sys
+if sys.version_info[0] < 3:
+    from StringIO import StringIO
+else:
+    from io import StringIO
 import requests
 import setup as mongler
 import pandas as pd
@@ -80,8 +84,7 @@ def main():
 
     ## Append the attendee reports and merge
     attendeeReport = attendeeReport.append(attendeeReport2)
-    attendeeReport = attendeeReport.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
-    attendeeReport.to_csv(path_of_buf = '~/MAIN/BCC/Club\ data/attendeeReport.csv')
+    attendeeReport.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
 
 if __name__ == "__main__":
     main()
