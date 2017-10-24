@@ -84,7 +84,9 @@ def main():
 
     ## Append the attendee reports and merge
     attendeeReport = attendeeReport.append(attendeeReport2)
+    # attendeeReport = attendeeReport.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
     attendeeReport.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
+    studentReport.to_csv('~/MAIN/BCC/Club data/studentReport.csv', index = False)
 
 if __name__ == "__main__":
     main()
