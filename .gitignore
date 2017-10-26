@@ -1,0 +1,9 @@
+# ignore all .csv with private data
+*.csv
+
+rosters/*.csv
+
+# ignore the setup with API key
+Bridge\ REST/setup.py
+
+*.xls

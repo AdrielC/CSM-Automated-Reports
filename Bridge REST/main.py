@@ -79,7 +79,7 @@ def main():
             print("Named %n reports" %(i +1))
             break
 
-    print("I WILL NOW RUN THE REPORTS HAHAHAHAHA. The first one is the studentReport 🏃🏃🏃🏃🏃🏃🏃🏃")
+    print("I WILL NOW RUN THE REPORTS HAHAHAHA. The first one is the studentReport 🏃🏃🏃🏃🏃🏃🏃🏃")
     ## Run reports
     payload = {'format':'csv'}
     studentReport = RunReport(fullStudent['id'], headers, payload)
@@ -95,6 +95,6 @@ def main():
     attendeeReport4.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
     studentReport.to_csv('~/MAIN/BCC/Club data/studentReport.csv', index = False)
 
-    print("I AM DONE WITH ALL YOUR REPORTS!!!! ❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️")
+    print("I AM DONE WITH ALL YOUR REPORTS!!!! ❤️")
 if __name__ == "__main__":
     main()

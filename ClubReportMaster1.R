@@ -30,23 +30,11 @@ for (file in file_list){
 setwd("~/MAIN/BCC/Club data")
 attendees <- read.csv('attendeeReport.csv', header = T)
 
-### Clean up the Last Name column by removing everything but the LAST name (everything after the last space)
-attendees$name <- NA
-for(i in 1:nrow(attendees)){
-  attendees[i,"name"] <- paste(attendees[i, "FirstName"], tail(unlist(strsplit(attendees[i,"LastName"], " ")), n = 1))
-}
-
-### Clean up the Last.Name column in master.club with the same method as above
-master.club$name <- NA
-master.club$Last.Name <- as.character(master.club$Last.Name)
-master.club$First.Name <- as.character(master.club$First.Name)
-for(x in 1:nrow(master.club)){
-  master.club[x,"name"] <- paste(master.club[x, "First.Name"], tail(unlist(strsplit(master.club[x,"Last.Name"], " ")), n = 1))
-}
-
 ### Identify the records (rows) in the attendee list that are not present in the Master club list
-non.members <- subset(attendees, !(attendees$name %in% master.club$name)) %>%
-  filter(LastName != "NA")
+non.members <- subset(attendees, !(attendees$Email %in% master.club$Email)) %>%
+  filter(Email != "NA" & Name != "") %>%
+  filter(Email != "") %>%
+  .[,c("Event.title", "Club", "Date", "Name", "Email")]
 
 
 
