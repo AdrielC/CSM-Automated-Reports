@@ -83,9 +83,9 @@ def main():
     attendeeReport2 = RunReport(nonArchivedEvents['id'], headers, payload)
 
     ## Append the attendee reports and merge
-    attendeeReport3 = attendeeReport.append(attendeeReport2)
-    attendeeReport4 = attendeeReport3.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
-    attendeeReport4.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
+    attendeeReport = attendeeReport.append(attendeeReport2)
+    # attendeeReport = attendeeReport.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
+    attendeeReport.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
     studentReport.to_csv('~/MAIN/BCC/Club data/studentReport.csv', index = False)
 
 if __name__ == "__main__":
