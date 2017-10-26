@@ -17,54 +17,10 @@ reportsDB = mongo_client.BYUbridge.reports
 ## Make requests to bridge for list of reports
 headers = {"Authorization":"Token %s" % mongler.TOKEN}
 
-## returns all of the reports on the bridge that contain an exact match to a keyword
-def GetReportList(keyword):
-    reports = []
-    pageNum = 1
-    while True:
-        payload = {'page':pageNum, 'perPage':'100'}
-        r = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports', params = payload, headers=headers)
-        models = r.json()['models']
-        if len(models) == 0:
-            break
-        else:
-            reports.append(models)
-            pageNum += 1
-
-    ### Find reports with the name ADRIEL in the Label
-    keywordReports = []
-    for page in reports:
-        for report in page:
-            if keyword in report['label']:
-                keywordReports.append(report)
-
-    ## This will print all of the reports
-    return keywordReports
-
-## Run the desired report
-def RunReport(reportID, headers, payload):
-    request = requests.put('https://byu-csm.symplicity.com/api/public/v1/reports/%s/run' %reportID, headers=headers)
-    ## This while loop waits until the most recent report to be completed
-    while True:
-        time.sleep(6)
-        ## this payload will request only the most recent run
-        tmp_payload = {'page':'1', 'perPage':'1'}
-        r = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/runs' %reportID, params = tmp_payload, headers=headers)
-        tmp = r.json()
-        print("RUNNING... 🏃🏃🏃🏃🏃🏃🏃🏃 🅱️ PATIENT")
-        if tmp['models'][0]['label'] == 'complete':
-            print("I AM DONE")
-            break
-    ## Once the report is run and completed, get the report run data
-    print("LMAO. 🅱️  CHILL. I AM NOW RUNNING THE GETDATA REPORT 🏃🏃🏃🏃🏃🏃🏃🏃")
-    request = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/data' %reportID, headers=headers, params=payload)
-    TMPDATA = StringIO(request.text)
-    return pd.read_csv(TMPDATA)
-
 ## This Main function will run all the desired reports given a certain keyword
 def main():
     ## Get the list of Reports
-    adrielReports = GetReportList('ADRIEL')
+    eventReport = GetReportList('ADRIEL')
     print(adrielReports)
 
     ## Name all of the reports based on label
