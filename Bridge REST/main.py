@@ -95,6 +95,6 @@ def main():
     attendeeReport4.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
     studentReport.to_csv('~/MAIN/BCC/Club data/studentReport.csv', index = False)
 
-    print("I AM DONE WITH ALL YOUR REPORTS!!!! ❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️")
+    print("I AM DONE WITH ALL YOUR REPORTS!!!! ❤️")
 if __name__ == "__main__":
     main()

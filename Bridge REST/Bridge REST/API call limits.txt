@@ -1,3 +1,0 @@
-API Call LimitsRate limiting of the API's are per-token basis. There are two effective rate limiters100 calls with a leak rate of 10 calls per second. If your app averages up to 10 calls per second it will never receive a "429 Rate Limit Exceeded Error".10,000 calls for a period of 24 hours, which will reset at midnight.All Responses will consists of 3 rate limiting headersX-Rate-Limit-Limit : Total rate limit for all calls in a dayX-Rate-Limit-Remaining : The number of requests left for the dayX-Rate-Limit-Reset : Time before the rate limit resets in UTC
-
-Installing MongoDB: https://treehouse.github.io/installation-guides/mac/mongo-mac.html
