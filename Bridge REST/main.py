@@ -79,7 +79,7 @@ def main():
             print("Named %n reports" %(i +1))
             break
 
-    print("I WILL NOW RUN THE REPORTS HAHAHAHAHA. The first one is the studentReport 🏃🏃🏃🏃🏃🏃🏃🏃")
+    print("I WILL NOW RUN THE REPORTS HAHAHAHA. The first one is the studentReport 🏃🏃🏃🏃🏃🏃🏃🏃")
     ## Run reports
     payload = {'format':'csv'}
     studentReport = RunReport(fullStudent['id'], headers, payload)
