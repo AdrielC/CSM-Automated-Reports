@@ -58,8 +58,7 @@ def GetReportList():
 
 ## Run the desired report. Accepts a key:value pair as the report argument
 
-def RunReport(reportName, reportId, headers=setup.HEADERS):
-    directory = os.path.dirname(os.path.realpath("MainRun.py"))
+def RunReport(reportName, reportId, headers=setup.HEADERS, directory = os.chdir(path)):
     print("RUNNING THE REPORT: %s 🏃" %reportName)
     request = requests.put('https://byu-csm.symplicity.com/api/public/v1/reports/%s/run' %reportId, headers=headers)
     ## This while loop waits until the most recent report to be completed
