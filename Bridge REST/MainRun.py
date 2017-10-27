@@ -1,27 +1,29 @@
-### Conda env for this is REST. Use $ source activate REST
-import sys
-if sys.version_info[0] < 3:
-    from StringIO import StringIO
-else:
-    from io import StringIO
-import requests
-import setup as mongler
-import pandas as pd
-import time as time
-from pymongo import MongoClient
+###########################################
+######### Symplicity CSM REST API #########
+###########################################
 
-## Configure mongo
-mongo_client = MongoClient(mongler.MONGO_ADDRESS,mongler.MONGO_PORT)
+### This is where the magic happens. Call the report functions and
+###### perform any transformations on the data in this script
+
+import reports as rep
+
+## Configure mongo if you need to use it
+mongo_client = MongoClient(rep.MONGO_ADDRESS, rep.MONGO_PORT)
 reportsDB = mongo_client.BYUbridge.reports
 
 ## Make requests to bridge for list of reports
-headers = {"Authorization":"Token %s" % mongler.TOKEN}
+headers = {"Authorization":"Token %s" % rep.TOKEN}
 
 ## This Main function will run all the desired reports given a certain keyword
+
+
+
+
 def main():
     ## Get the list of Reports
-    eventReport = GetReportList('ADRIEL')
-    print(adrielReports)
+    reportList = GetReportList('ADRIEL')
+    for i in enumerate(eventReports):
+        print(adrielReports)
 
     ## Name all of the reports based on label
     for i, report in enumerate(adrielReports):
@@ -35,13 +37,13 @@ def main():
             print("Named %n reports" %(i +1))
             break
 
-    print("I WILL NOW RUN THE REPORTS HAHAHAHA. The first one is the studentReport 🏃🏃🏃🏃🏃🏃🏃🏃")
+    print("NOW RUNNING THE REPORTS. The first one is the studentReport 🏃")
     ## Run reports
     payload = {'format':'csv'}
     studentReport = RunReport(fullStudent['id'], headers, payload)
-    print("I WILL NOW RUN THE FIRST attendeeReport 🏃🏃🏃🏃🏃🏃🏃🏃")
+    print("I WILL NOW RUN THE FIRST attendeeReport 🏃")
     attendeeReport = RunReport(archivedAttendees['id'], headers, payload)
-    print("I WILL NOW RUN ANOTHER attendeeRepor 🏃🏃🏃🏃🏃🏃🏃🏃")
+    print("I WILL NOW RUN ANOTHER attendeeReport 🏃")
     attendeeReport2 = RunReport(nonArchivedEvents['id'], headers, payload)
     print("I WILL NOW CLEAN THE DATA AND EXPORT")
     ## Append the attendee reports and merge
@@ -51,6 +53,6 @@ def main():
     attendeeReport4.to_csv('~/MAIN/BCC/Club data/attendeeReport.csv', index = False)
     studentReport.to_csv('~/MAIN/BCC/Club data/studentReport.csv', index = False)
 
-    print("I AM DONE WITH ALL YOUR REPORTS!!!! ❤️")
+    print("I AM DONE WITH ALL YOUR REPORTS! 🆒")
 if __name__ == "__main__":
     main()
