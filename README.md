@@ -1,13 +1,19 @@
-# CSM-Automated-Reports
+# Symplicity CSM automated reports
+Automated Run and Read reports from Symplicity through REST API. Run pre-existing reports on the system, or create your own and bypass the reporting function native to the CSM webservice.
 
-### Written in Anaconda distribution Python 3.3+, and R
-### This is used to automate reports for the following or more purposes:
+## This is used to automate reports for the following or more purposes:
 1) Creating reports of students who attend a club but are not a part of it
 2) Tracking club event attendance
 3) Measuring student engagement on the CSM platform
 etc.
 
-## Important files
+# Requirements
+- Anaconda distribution Python 3.3+
+- CSM REST API Token (see API_info.txt)
+- READ and RUN access to CSM REST API
+- Unix (only if you want emojis in your command line output 🤷🏼‍♂️)
+
+# Important files
 ### 1) setup.py
 This is where you will need to input your API token in order to authenticate and authorize your REST API access to CSM. You can also create a MongoDB database to temporarily store large amounts of data to the disk.
 
