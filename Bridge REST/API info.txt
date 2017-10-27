@@ -1,0 +1,50 @@
+Request a REST API Token
+  Submit a support ticket requesting an API token and include the following information:
+    ▪ Username for the API (does not need to be a CSM account username)
+    ▪ Email to associate with the account
+    ▪ Specify if the account is for Testing (short-term) or Standard Use (long-term)
+      o Test Account tokens expire after 30 days. Standard Use tokens expire after one year.
+    ▪ Access Requested
+      o You may request full access or partial access to individual components of the API. If
+        you need everything, request “Full” access. If partial access is required, please specify
+        the individual rights requested from the list below.
+      o Access Rights Available:
+    ▪ Student Read
+    ▪ Student Write
+    ▪ Contact Read
+    ▪ Contact Write
+    ▪ Employer Read
+    ▪ Employer Write
+    ▪ Job Read
+    ▪ Job Write
+    ▪ Counseling Read
+    ▪ Report Read
+    ▪ Report Run
+    ▪ Event Read
+
+Retrieving the Token
+  After the ticket is resolved, API Tokens will be found in Tools | System Settings | Systems Integration
+    > Public API Tokens
+
+Token Security
+    Symplicity CSM’s REST API is a powerful tool capable of keeping your site infused with up-to-date
+    data. But with great power, comes great responsibility. An authorized user with “Write” access via
+    the API will be able to overwrite important records. It is essential to the security of your CSM system
+    that only authorized users have access to the API keys. Multiple tokens may be created to allow
+    admins to grant granular API access to a given token. Furthermore, we recommend limiting System
+    Setting access (which allows for view access to the API tokens) to only Super Users. If you feel that a
+    token has been compromised, or needs revoke, please file a support ticket requesting termination of
+    access for that token. Testing tokens are not restricted beyond limitation of term of application, they
+    will have access to real, live CSM data.
+
+Technical Documentation
+    Technical documentation for the REST API is located at: http://docs.enterprisecsm.apiary.io
+
+Using the REST API
+    Once setup, you have many options on how to best take advantage of the service. Some examples
+    are listed below:
+      ▪ Add students: Add a few students or an entire incoming class.
+      ▪ Pull Employer Contact Info: Pull contact information for all employers to start your next recruiting
+        campaign.
+      ▪ Build your own form: Build your own custom job submission form which automatically feeds into CSM.
+      ▪ Populate your Calendar Screens around campus: Set up your calendar to feed displays around campus.
