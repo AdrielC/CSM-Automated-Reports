@@ -11,7 +11,7 @@ etc.
 - Anaconda distribution Python 3.3+
 - CSM REST API Token (see API_info.txt)
 - READ and RUN access to CSM REST API
-- Unix (only if you want emojis in your command line output 🤷🏼‍♂️)
+- Unix (only if you want emojis in your command line output 🆒)
 
 # Important files
 ### 1) setup.py
