@@ -6,6 +6,7 @@
 ###### perform any transformations on the data in this script
 
 import reports as rep
+import argparse
 
 ## Configure mongo if you need to use it
 mongo_client = MongoClient(rep.MONGO_ADDRESS, rep.MONGO_PORT)
@@ -16,16 +17,13 @@ headers = {"Authorization":"Token %s" % rep.TOKEN}
 
 ## This Main function will run all the desired reports given a certain keyword
 
-
-
-
 def main():
     ## Get the list of Reports
     reportList = GetReportList('ADRIEL')
     for i in enumerate(eventReports):
         print(adrielReports)
 
-    ## Name all of the reports based on label
+    ## Name all of the reports based on label of your choosing
     for i, report in enumerate(adrielReports):
         if 'Full Student List' in report['label']:
             fullStudent = report
