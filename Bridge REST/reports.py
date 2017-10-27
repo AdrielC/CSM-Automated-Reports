@@ -11,11 +11,6 @@ import pandas as pd
 import time as time
 from pymongo import MongoClient
 
-## Configure mongo
-mongo_client = MongoClient(mongler.MONGO_ADDRESS,mongler.MONGO_PORT)
-reportsDB = mongo_client.BYUbridge.reports
-
-## Make requests to bridge for list of reports
 headers = {"Authorization":"Token %s" % mongler.TOKEN}
 
 ## returns all of the reports on the bridge that contain an exact match to a keyword
@@ -63,34 +58,34 @@ def RunReport(reportID, headers, payload):
     TMPDATA = StringIO(request.text)
     return pd.read_csv(TMPDATA)
 
-# ## This Main function will run all the desired reports given a certain keyword
-# def main():
-#     ## Get the list of Reports
-#     adrielReports = GetReportList('ADRIEL')
-#     print(adrielReports)
-#
-#     ## Name all of the reports based on label
-#     for i in len(adrielReports):
-#         if 'Full Student List' in adrielReports[i]['label']:
-#             fullStudent = adrielReports[i]
-#         elif 'Archived Events' in adrielReports[i]['label']:
-#             archivedAttendees = adrielReports[i]
-#         elif 'Non-archived' in adrielReports[i]:
-#             nonArchivedEvents = adrielReports[i]
-#         else:
-#             print("Named %n reports" %(i +1))
-#             break
-#
-#     ## Run reports
-#     payload = {'format':'csv'}
-#     studentReport = RunReport(fullStudent['id'], headers, payload)
-#     attendeeReport = RunReport(archivedAttendees['id'], headers, payload)
-#     attendeeReport2 = RunReport(nonArchivedEvents['id'], headers, payload)
-#
-#     ## Append the attendee reports and merge
-#     attendeeReport = attendeeReport.append(attendeeReport2)
-#     attendeeReport = attendeeReport.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
-#     attendeeReport.to_csv(path_of_buf = '~/MAIN/BCC/Club\ data/attendeeReport.csv')
-#
-# if __name__ == "__main__":
-#     main()
+## This Main function will run all the desired reports given a certain keyword
+def main():
+    ## Get the list of Reports
+    adrielReports = GetReportList('ADRIEL')
+    print(adrielReports)
+
+    ## Name all of the reports based on label
+    for i in len(adrielReports):
+        if 'Full Student List' in adrielReports[i]['label']:
+            fullStudent = adrielReports[i]
+        elif 'Archived Events' in adrielReports[i]['label']:
+            archivedAttendees = adrielReports[i]
+        elif 'Non-archived' in adrielReports[i]:
+            nonArchivedEvents = adrielReports[i]
+        else:
+            print("Named %n reports" %(i +1))
+            break
+
+    ## Run reports
+    payload = {'format':'csv'}
+    studentReport = RunReport(fullStudent['id'], headers, payload)
+    attendeeReport = RunReport(archivedAttendees['id'], headers, payload)
+    attendeeReport2 = RunReport(nonArchivedEvents['id'], headers, payload)
+
+    ## Append the attendee reports and merge
+    attendeeReport = attendeeReport.append(attendeeReport2)
+    attendeeReport = attendeeReport.merge(studentReport, left_on='Kiosk Swipe Log: student', right_on='Name')
+    attendeeReport.to_csv(path_of_buf = '~/MAIN/BCC/Club\ data/attendeeReport.csv')
+
+if __name__ == "__main__":
+    main()
