@@ -93,7 +93,7 @@ def RunReport(reportName, reportId, headers=setup.HEADERS, directory = os.getcwd
     TMPDATA = StringIO(request.text)
     finishedReport = pd.read_csv(TMPDATA)
     if csv == True:
-        finishedReport.to_csv(directory + reportName + ".csv", index = False)
-        print('/nSaved file to ' + directory)
+        finishedReport.to_csv(directory + " " + reportName + ".csv", index = False)
+        print('\nSaved file to ' + directory)
     if dataframe == True:
         return finishedReport

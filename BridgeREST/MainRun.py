@@ -7,7 +7,6 @@
 
 import setup
 from reports import *
-import argparse
 from pymongo import MongoClient
 
 ## Configure mongo if you need to use it
