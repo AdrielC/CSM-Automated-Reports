@@ -26,7 +26,7 @@ This script is where all the functions are executed. This is an example of const
 ### 4) RClubAttendance.R
 This is an example of further cleaning the data exported from the REST reports. It is possible to call R scripts inside of Python as a subprocess if a cross-language data team deemed it necessary. As I am more comfortable in R for data cleaning and transformation, I have included this script here for the sake of example of a finished report.
 
-
+<!-- 
 ###############################################
 ########## Symplicity CSM REST API ############
 ###############################################
@@ -49,4 +49,4 @@ This is an example of further cleaning the data exported from the REST reports. 
 ##  MMNM                    MMMM             ##
 ###############################################
 ######### Symplicity CSM REST API #############
-###############################################
+############################################### -->
