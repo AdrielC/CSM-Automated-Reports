@@ -24,7 +24,7 @@ def main():
     for reportName, reportId in reportList.items():
         RunReport(reportName, reportId)
 
-    print("I AM DONE WITH ALL YOUR REPORTS! 🆒")
+    print("\nI AM DONE WITH ALL YOUR REPORTS! 🆒")
 
 if __name__ == "__main__":
     main()
