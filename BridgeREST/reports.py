@@ -40,13 +40,17 @@ def GetReportList():
 
     ### Find reports with the keyword in the Label
     reportList = {}
-    for page in reports:
-        for report in page:
-            if re.search(keyword, report['label'], re.IGNORECASE): # This searches all the report labels for your keyword, ignoring case
-                label = report['label']
-                reportList[label] = report['id']
+    try:
+        for page in reports:
+            for report in page:
+                if re.search(keyword, report['label'], re.IGNORECASE): # This searches all the report labels for your keyword, ignoring case
+                    label = report['label']
+                    reportList[label] = report['id']
+    except:
+        print("\n🚫  Invalid search, must contain normal characters. Please try again")
+        return GetReportList()
 
-    print("\n 🔎  Bridge Report Search Result  🔍‍ \n")
+    print("\n 🔎  Bridge Report Search Result 🔍‍ \n")
     for reportName, reportId in reportList.items():
         print("Report name: %s \t Report Id: %s" %(reportName, reportId))
 
@@ -55,37 +59,41 @@ def GetReportList():
     if val == "n":
         return reportList
     elif val == "y":
-        GetReportList()
+        return GetReportList()
     else:
         while True:
             if val not in ("y", "n"):
                 val = input("Invalid response. Would you like to search again? y/n --> ")
                 continue
             elif val == "y":
-                GetReportList()
+                return GetReportList()
             elif val == "n":
                 return reportList
                 break
 
-## Run the desired report. Accepts a key:value pair as the report argument
-
-def RunReport(reportName, reportId, headers=setup.HEADERS, directory = os.getcwd()):
+## Run the desired report. Accepts a key:value pair as the report arguments. Optional arguments: directory -- you can specify the directory of where to save the csv, dataframe -- if True, the function will return a dataframe object of the report, csv -- if false, no csv will be written
+def RunReport(reportName, reportId, headers=setup.HEADERS, directory = os.getcwd(), dataframe = False, csv = True):
     print("\nRUNNING THE REPORT: %s 🏃" %reportName)
     request = requests.put('https://byu-csm.symplicity.com/api/public/v1/reports/%s/run' %reportId, headers=headers)
     ## This while loop waits until the most recent report to be completed
     while True:
-        time.sleep(12)
+        time.sleep(6)
         ## this payload will request only the most recent run
         tmp_payload = {'page':'1', 'perPage':'1'}
         r = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/runs' %reportId, params = tmp_payload, headers=headers)
         tmp = r.json()
         print("RUNNING... 🅱️  patient")
         if tmp['models'][0]['label'] == 'complete':
-            print("I AM DONE")
+            print("\nReport has finished  ✅\n")
             break
-    ## Once the report is run and completed, get the report run data
-    print("\nRUNNING THE GET:DATA REPORT 🏃")
+        ## Once the report is run and completed, get the report run data
+
+    print("RUNNING THE GET:DATA REPORT 🏃")
     request = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/data' %reportId, headers=headers, params=setup.dPAYLOAD)
     TMPDATA = StringIO(request.text)
     finishedReport = pd.read_csv(TMPDATA)
-    finishedReport.to_csv(directory + reportName + '.csv', index = False)
+    if csv == True:
+        finishedReport.to_csv(directory + "/" + reportName + ".csv", index = False)
+        print('\nSaved file to ' + directory)
+    if dataframe == True:
+        return finishedReport

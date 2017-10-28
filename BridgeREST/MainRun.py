@@ -7,7 +7,6 @@
 
 import setup
 from reports import *
-import argparse
 from pymongo import MongoClient
 
 ## Configure mongo if you need to use it
@@ -24,7 +23,7 @@ def main():
     for reportName, reportId in reportList.items():
         RunReport(reportName, reportId)
 
-    print("I AM DONE WITH ALL YOUR REPORTS! 🆒")
+    print("\nI AM DONE WITH ALL YOUR REPORTS! 🆒")
 
 if __name__ == "__main__":
     main()
