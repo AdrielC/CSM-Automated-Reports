@@ -4,6 +4,6 @@
 rosters/*.csv
 
 # ignore the setup with API key
-Bridge\ REST/setup.py
+BridgeREST/setup.py
 
 *.xls
