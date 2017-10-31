@@ -11,7 +11,6 @@ import requests
 import setup
 import pandas as pd
 import time as time
-from pymongo import MongoClient
 import re
 import os
 

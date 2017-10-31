@@ -4,6 +4,10 @@
 
 import setup
 from reports import *
+from pymongo import MongoClient
+
+mongo_client = MongoClient(setup.MONGO_ADDRESS, setup.MONGO_PORT)
+reportsDB = mongo_client.BYUbridge.reports
 
 def studentNameMerge():
     print("Lmao")
