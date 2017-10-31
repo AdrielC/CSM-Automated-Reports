@@ -97,3 +97,31 @@ def RunReport(reportName, reportId, headers=setup.HEADERS, directory = os.getcwd
         print('\nSaved file to ' + directory)
     if dataframe == True:
         return finishedReport
+
+
+
+def RunReport(reportName, reportId, headers=setup.HEADERS, directory = os.getcwd(), dataframe = False, csv = True):
+    print("\nRUNNING THE REPORT: %s 🏃" %reportName)
+    request = requests.put('https://byu-csm.symplicity.com/api/public/v1/reports/%s/run' %reportId, headers=headers)
+    ## This while loop waits until the most recent report to be completed
+    while True:
+        time.sleep(6)
+        ## this payload will request only the most recent run
+        tmp_payload = {'page':'1', 'perPage':'1'}
+        r = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/runs' %reportId, params = tmp_payload, headers=headers)
+        tmp = r.json()
+        print("RUNNING... 🅱️  patient")
+        if tmp['models'][0]['label'] == 'complete':
+            print("\nReport has finished  ✅\n")
+            break
+        ## Once the report is run and completed, get the report run data
+
+    print("RUNNING THE GET:DATA REPORT 🏃")
+    request = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/data' %reportId, headers=headers, params=setup.dPAYLOAD)
+    TMPDATA = StringIO(request.text)
+    finishedReport = pd.read_csv(TMPDATA)
+    if csv == True:
+        finishedReport.to_csv(directory + "/" + reportName + ".csv", index = False)
+        print('\nSaved file to ' + directory)
+    if dataframe == True:
+        return finishedReport
