@@ -11,7 +11,6 @@ import requests
 import setup
 import pandas as pd
 import time as time
-from pymongo import MongoClient
 import re
 import os
 
@@ -89,6 +88,30 @@ def RunReport(reportName, reportId, headers=setup.HEADERS, directory = os.getcwd
         ## Once the report is run and completed, get the report run data
 
     print("RUNNING THE GET:DATA REPORT 🏃")
+    request = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/data' %reportId, headers=headers, params=setup.dPAYLOAD)
+    TMPDATA = StringIO(request.text)
+    finishedReport = pd.read_csv(TMPDATA)
+    if csv == True:
+        finishedReport.to_csv(directory + "/" + reportName + ".csv", index = False)
+        print('\nSaved file to ' + directory)
+    if dataframe == True:
+        return finishedReport
+
+def RunReportSimple(reportName, reportId, headers=setup.HEADERS, directory = os.getcwd(), dataframe = False, csv = True):
+    request = requests.put('https://byu-csm.symplicity.com/api/public/v1/reports/%s/run' %reportId, headers=headers)
+    ## This while loop waits until the most recent report to be completed
+    while True:
+        time.sleep(6)
+        ## this payload will request only the most recent run
+        tmp_payload = {'page':'1', 'perPage':'1'}
+        r = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/runs' %reportId, params = tmp_payload, headers=headers)
+        tmp = r.json()
+        try:
+            if tmp['models'][0]['label'] == 'complete':
+                break
+        except:
+            print("Error: incorrect report Id, recheck Id")
+        ## Once the report is run and completed, get the report run data
     request = requests.get('https://byu-csm.symplicity.com/api/public/v1/reports/%s/data' %reportId, headers=headers, params=setup.dPAYLOAD)
     TMPDATA = StringIO(request.text)
     finishedReport = pd.read_csv(TMPDATA)
