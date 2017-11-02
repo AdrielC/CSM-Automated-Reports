@@ -32,7 +32,8 @@ library(RGoogleAnalytics)
 library(lazyeval)
 library(scales)
 
-setwd("~/MAIN/BCC/Melinda Reports/Analysis/Data")
+# setwd("~/MAIN/BCC/Melinda Reports/Analysis/Data")
+setwd("~/MAIN/BCC/EventsTeamReport/")
 
 # Helper functions (and ideas for creating later)
 SchoolYear <- function(data){
@@ -51,8 +52,11 @@ SchoolYear <- function(data){
 ### indicates that no iPad was used.
 ### Strategic Question 2: Are 
 
-iPads <- read.csv("2015-2018 Club Event Attendees.csv")
-iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%b %d, %Y, %l")
+# iPads <- read.csv("2015-2018 Club Event Attendees.csv")
+iPads <- read.csv("2017-2018 Club Attendance.csv")
+
+#iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%b %d, %Y, %l")
+iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%m/%d/%y %H:%M")
 
 iPads$SchoolYear <- ifelse(iPads$Date >= as.Date("2014-09-01") & iPads$Date < as.Date("2015-04-19"), "2014-2015",
                             ifelse(iPads$Date >= as.Date("2015-09-01") & iPads$Date < as.Date("2016-04-19"), "2015-2015",
@@ -75,6 +79,7 @@ iPadsCurrent %>%
   summarise(Event = first(Information.Session..Club.Event.Title), iPad = first(iPad), Date = first(Date), PD = first(Type)) -> iPadsCurrent1
 
 iPadsCurrent1 <- iPadsCurrent1[!(iPadsCurrent1$Date > Sys.time()),]
+iPadsCurrent <- iPadsCurrent[!(iPadsCurrent$Date > Sys.time()),]
 
 
 ### Create Previous time period to compare to
@@ -98,7 +103,9 @@ ggplot(iPadsWeek, aes(x = iPad, fill = iPad)) +
   ggtitle("Current Week")
 
 # Join the data tables to add more identifiers
+setwd("~/MAIN/BCC/Melinda Reports/Analysis/Data")
 FullStudent <- read.csv("Full Student List **ADRIEL**.csv", header = T)
+setwd("~/MAIN/BCC/EventsTeamReport/")
 Attendees <- iPadsCurrent
 
 colnames(Attendees) <- c("Event Type", "Start Time", 
@@ -115,6 +122,7 @@ AttendeesFull <- left_join(Attendees, FullStudent, by = "Name")
 
 # Select All MA events that have Dojo in the name
 selectionCriteria <- c("dojo", "qualtrics")
+MAFull <- subset(AttendeesFull, Club == "BYU Marketing Association")
 MA <- subset(AttendeesFull, Club == "BYU Marketing Association" & 
                grepl(paste(selectionCriteria, collapse = "|"), `Club Event Name`, ignore.case = T) &
                is.na(Email)==F) %>% filter(`Club Event Name` != "Marketing Association DOJO with Disruptive Advertising")
@@ -134,6 +142,72 @@ ggplot(MA, aes(x = Class.Level, fill = Class.Level)) +
   scale_y_continuous(labels = percent) +
   geom_text(aes( label = scales::percent(..count../sum(..count..)), y= ..prop.. ), stat= "count", vjust = 25) +
   ggtitle("Proportion of Class Levels in MA DOJOs")
+
+
+## This report Creates the above proportion graph for each club
+Plots <- list()
+tmpSub <- list()
+
+### This one was gnarly... It basically creates a proportion plot for each club that had more than one event with attendees
+for(i in 1:length(levels(AttendeesFull$Club))){
+  tmpSub[[i]] <- subset(AttendeesFull, Club == levels(AttendeesFull$Club)[i]) %>% filter(is.na(Class.Level) != T)
+  if(!is.null(nrow(tmpSub[[i]])) & nrow(tmpSub[[i]]) > 2){
+    if(length(unique(tmpSub[[i]]$Class.Level)) == 4){
+      tmpSub[[i]]$Class.Level <- factor(tmpSub[[i]]$Class.Level, levels = c("Freshman", "Sophomore", "Junior", "Senior"))
+    }
+    tmpPlot = ggplot(tmpSub[[i]], aes(x = Class.Level, fill = Class.Level)) +  
+      geom_bar(aes(y = (..count..)/sum(..count..))) + 
+      xlab("Class Level") +
+      ylab("Percentage") +
+      coord_cartesian(ylim = c(0,1)) +
+      scale_y_continuous(labels = percent) +
+      geom_text(aes( label = scales::percent(..count../sum(..count..)), y= ..prop.. ), stat= "count", vjust = 2) +
+      ggtitle(paste("Proportion of Class Levels in", levels(AttendeesFull$Club)[i]))
+    Plots[[paste0("Plot", i)]] <- tmpPlot
+  }
+}
+
+for(i in 1:length(Plots)){
+  try(print(Plots[i]), silent = F)
+  ggsave(paste0("Plot", i, ".png"), plot = last_plot())
+}
+
+### This one does the same, except it does the count for each event
+countByEvents <- AttendeesFull %>% 
+  filter(`Club Event Name` != "") %>% filter(Club != "") %>%
+  group_by(`Club Event Name`) %>% 
+  summarise(Club = first(Club), Event = first(`Club Event Name`), AttendeeSum = n()) %>% ungroup()
+
+countByEvents$AttendeeSum <- with(countByEvents, reorder(AttendeeSum, -AttendeeSum))
+countByEvents$Event <- as.factor(as.character(countByEvents$Event))
+countByEvents$AttendeeSum <- as.numeric(as.character(countByEvents$AttendeeSum))
+
+str(countByEvents)
+Plots1 <- list()
+tmpSub <- list()
+for(i in 1:length(levels(countByEvents$Club))){
+  tmpSub[[i]] <- subset(countByEvents, Club == levels(countByEvents$Club)[i]) %>% filter(is.na(Event) != T) %>%
+    filter(AttendeeSum > 2 )
+  if(!is.null(tmpSub[[i]]$AttendeeSum) & nrow(tmpSub[[i]]) > 0){
+    tmpPlot = ggplot(tmpSub[[i]], aes(x = `Club Event Name`, y= as.factor(AttendeeSum), fill = `Club Event Name`)) +  
+      geom_bar(stat = "identity") + 
+      xlab("Club Event Name") +
+      ylab("Attendees") +
+      # geom_text(aes( label = sum(count)), y= count, stat= "count", vjust = 2) +
+      ggtitle(paste("Number of Attendees:", levels(AttendeesFull$Club)[i])) +
+      theme(text = element_text(size=10), axis.text.x = element_text(angle=45, hjust=1),
+            legend.text=element_text(size=6)) 
+    Plots1[[paste0("Attendee Report", levels(countByEvents$Club)[i])]] <- tmpPlot
+  }
+}
+
+for(i in 1:length(Plots1)){
+  try(print(Plots1[i]), silent = F)
+  ggsave(paste0("Attendee Plot", i), plot = last_plot())
+}
+rm(Plots1)
+
+Plots1[[4]]
 
 
 ### Percent Professional Development
