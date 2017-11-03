@@ -163,13 +163,13 @@ for(i in 1:length(levels(AttendeesFull$Club))){
       scale_y_continuous(labels = percent) +
       geom_text(aes( label = scales::percent(..count../sum(..count..)), y= ..prop.. ), stat= "count", vjust = 2) +
       ggtitle(paste("Proportion of Class Levels in", levels(AttendeesFull$Club)[i]))
-    Plots[[paste0("Plot", i)]] <- tmpPlot
+    Plots[[paste0("Class Level", levels(countByEvents$Club)[i])]] <- tmpPlot
   }
 }
 
 for(i in 1:length(Plots)){
   try(print(Plots[i]), silent = F)
-  ggsave(paste0("Plot", i, ".png"), plot = last_plot())
+  ggsave(paste0(names(Plots)[i], i, ".png"), plot = last_plot())
 }
 
 ### This one does the same, except it does the count for each event
@@ -182,7 +182,7 @@ countByEvents$AttendeeSum <- with(countByEvents, reorder(AttendeeSum, -AttendeeS
 countByEvents$Event <- as.factor(as.character(countByEvents$Event))
 countByEvents$AttendeeSum <- as.numeric(as.character(countByEvents$AttendeeSum))
 
-str(countByEvents)
+setwd("/Volumes/share/Business Career Center/Operations Team/03 Brand Management/Events Team/02 Meeting Material/Club Meeting Material/Powerpoints/2017-2018/Data Charts for 2017-2018")
 Plots1 <- list()
 tmpSub <- list()
 for(i in 1:length(levels(countByEvents$Club))){
@@ -197,17 +197,18 @@ for(i in 1:length(levels(countByEvents$Club))){
       ggtitle(paste("Number of Attendees:", levels(AttendeesFull$Club)[i])) +
       theme(text = element_text(size=10), axis.text.x = element_text(angle=45, hjust=1),
             legend.text=element_text(size=6)) 
-    Plots1[[paste0("Attendee Report", levels(countByEvents$Club)[i])]] <- tmpPlot
+    Plots1[[paste0("Attendee Report ", levels(countByEvents$Club)[i])]] <- tmpPlot
   }
 }
 
 for(i in 1:length(Plots1)){
   try(print(Plots1[i]), silent = F)
-  ggsave(paste0("Attendee Plot", i), plot = last_plot())
+  ggsave(paste0(names(Plots1)[i], i, ".png"), plot = last_plot())
 }
-rm(Plots1)
+Plots1$
+ggsave(paste0(names(Plots1)[i]), plot = last_plot())
 
-Plots1[[4]]
+names(Plots1)[1]
 
 
 ### Percent Professional Development
