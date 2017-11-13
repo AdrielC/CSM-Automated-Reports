@@ -33,7 +33,7 @@ library(lazyeval)
 library(scales)
 
 # setwd("~/MAIN/BCC/Melinda Reports/Analysis/Data")
-setwd("~/MAIN/BCC/EventsTeamReport/")
+setwd("~/MAIN/BCC/RESTReporting/BridgeREST/")
 
 # Helper functions (and ideas for creating later)
 SchoolYear <- function(data){
@@ -52,8 +52,8 @@ SchoolYear <- function(data){
 ### indicates that no iPad was used.
 ### Strategic Question 2: Are 
 
-# iPads <- read.csv("2015-2018 Club Event Attendees.csv")
-iPads <- read.csv("2017-2018 Club Attendance.csv")
+iPads <- read.csv("2013-2018 Club Event Attendees **ADRIEL**.csv")
+# iPads <- read.csv("2017-2018 Club Attendance.csv")
 
 #iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%b %d, %Y, %l")
 iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%m/%d/%y %H:%M")
@@ -224,6 +224,7 @@ ggplot(PD, aes(x = PD, fill = PD)) +
   ggtitle("09/01/17 - Present: Club Events")
 
 ## 2) OCR Job Application time series
+setwd("~/MAIN/BCC/RESTReporting/BridgeREST/")
 
 OCRapp <- read.csv("OCR Job Application Count **ADRIEL**.csv")
 OCRapp$Date <- as.POSIXct(OCRapp$OCR.Schedule.Data..Date, format = "%Y-%m-%d")
