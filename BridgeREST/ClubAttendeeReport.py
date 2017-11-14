@@ -9,7 +9,7 @@ import json
 
 mongo_client = MongoClient(setup.MONGO_ADDRESS, setup.MONGO_PORT)
 reportsDB = mongo_client.BYUbridge.reports
-directoryOUT = "~/MAIN/BCC/Club\ data/Full\ Data/"
+directoryOUT = "~/MAIN/BCC/Club data/Full Data/"
 
 def studentNameMerge():
     print("Lmao")
