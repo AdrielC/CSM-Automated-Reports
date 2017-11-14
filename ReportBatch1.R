@@ -55,8 +55,8 @@ SchoolYear <- function(data){
 iPads <- read.csv("2013-2018 Club Event Attendees **ADRIEL**.csv")
 # iPads <- read.csv("2017-2018 Club Attendance.csv")
 
-#iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%b %d, %Y, %l")
-iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%m/%d/%y %H:%M")
+iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%b %d, %Y, %l")
+#iPads$Date <- as.POSIXct(iPads$Information.Session..Start.Date.Time, format = "%m/%d/%y %H:%M")
 
 iPads$SchoolYear <- ifelse(iPads$Date >= as.Date("2014-09-01") & iPads$Date < as.Date("2015-04-19"), "2014-2015",
                             ifelse(iPads$Date >= as.Date("2015-09-01") & iPads$Date < as.Date("2016-04-19"), "2015-2015",
@@ -205,10 +205,6 @@ for(i in 1:length(Plots1)){
   try(print(Plots1[i]), silent = F)
   ggsave(paste0(names(Plots1)[i], i, ".png"), plot = last_plot())
 }
-Plots1$
-ggsave(paste0(names(Plots1)[i]), plot = last_plot())
-
-names(Plots1)[1]
 
 
 ### Percent Professional Development
