@@ -1,11 +1,9 @@
 # ignore all .csv with private data
 *.csv
-
 rosters/*.csv
-
 # ignore the setup with API key
 BridgeREST/setup.py
-
 *.xls
-
 *.lmao
+*token_file
+.httr-oauth

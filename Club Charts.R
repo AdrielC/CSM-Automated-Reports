@@ -32,7 +32,7 @@ setwd("~/MAIN/BCC/RESTReporting/")
 if(!("easypackages" %in% installed.packages()[,"Package"])) install_packages("easypackages"); library(easypackages)
 
 # Create a list of your packages as strings and then install/load as needed
-list.of.packages <- c("dplyr", "ggplot2","lubridate", "lazyeval", "scales")
+list.of.packages <- c("dplyr", "ggplot2","lubridate", "lazyeval", "scales", "fcuk", "RGoogleAnalytics", "ggfortify", "forecast", "fpp2", "ISLR", "leaps")
 packages(list.of.packages, prompt = F)
 
 # Helper functions (and any ideas for creating later)
@@ -140,10 +140,62 @@ for(i in 1:length(Plots1)){
   ggsave(paste0(names(Plots1)[i], i, ".png"), plot = last_plot())
 }
 
+### Now, lets look at the correlation between Careerlaunch Traffic and club attendance
+source("~/MAIN/MA/Analytics Dojo/setup.R")
+
+Q.Users2017 <- Init(table.id = "ga:107460317",
+                    start.date = "2017-09-01", # GA will return data for the day before this date
+                    end.date = as.Date(Sys.time()), # This returns the current date
+                    metrics = "ga:users,ga:avgTimeOnPage, ga:sessions, ga:avgSessionDuration, ga:pageviews", # These are the site measurements you want to examine
+                    dimensions = "ga:date", # This is your date column
+                    segment = "sessions::condition::ga:exitPagePath=@events",
+                    max.results = 10000)
+
+# Step Four: Execute the Query (the queries you just made)
+
+## Build the query so Google Analytics can read it
+ga.query <- QueryBuilder(Q.Users2017)
+
+## Fire the Query to the GA API, and reorder the result. Each query will take some time depending on your time interval
+ga.df <- GetReportData(ga.query, token, split_daywise = T) # Set Split_daywise = True to get unsampled, true data for each day
+ga.df <- ga.df[order(as.numeric(ga.df$date)),] # Reorder by date descending
 
 
+## Create a timeseries of club event attendance
+AttendeesFull %>% 
+  filter(ClubEventName != "") %>% filter(StudentName != "") %>%
+  group_by(StartDate) %>% 
+  summarise(AttendeeSum = n(), Date = first(StartDate)) %>% ungroup() -> countByDay
 
+countByDay$Date <- as.POSIXct(countByDay$Date, format = "%b %d, %Y, %I:%M %p")
+ga.df$Date <- as.POSIXct(ga.df$date, format = "%Y%m%d")
 
+countByDay$Date <- round_date(countByDay$Date, "day")
+ga.df$Date <- round_date(ga.df$Date, "day")
 
+Joined <- left_join(ga.df, countByDay, by = "Date")
 
+### Create your linear models
+par(mfrow=c(2,2))
+plot(Joined$AttendeeSum, Joined$users)
+plot(Joined$AttendeeSum, Joined$avgTimeOnPage)
+plot(Joined$AttendeeSum, Joined$sessions)
+hist(Joined$AttendeeSum)
+
+RegData <- select(Joined, users, avgTimeOnPage, sessions, avgSessionDuration, pageviews, AttendeeSum) %>%
+  subset(!(is.na(AttendeeSum)))
+
+leap <- regsubsets(AttendeeSum~., data = RegData, nbest = 10)
+leapsum <- summary(leap)
+par(mfrow=c(1,1))
+plot(leap, scale = 'adjr2')
+
+mod1 <- lm(AttendeeSum ~ avgSessionDuration + pageviews, data = RegData)
+summary(mod1)
+
+RegData1 <- RegData
+RegData1$pageviews <- lag(RegData1$pageviews, n = 1L)
+RegData1$avgSessionDuration <- lag(RegData1$avgSessionDuration, n = 1L)
+mod2 <- lm(AttendeeSum ~ pageviews + avgSessionDuration, data = RegData1)
+summary(mod2)
 
