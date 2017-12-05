@@ -17,13 +17,13 @@ file_list <- list.files("./rosters/")
 
 ## Only run this once. This creates the combined list of everyone in each club.
 for (file in file_list){
-  
+
   ## if the merged master.club doesn't exist, create it
   if (!exists("master.club")){
     master.club <- read.csv(paste0("./rosters/",file), header=TRUE, sep=",")
     master.club$club <- sprintf("%s", unlist(strsplit(file, ".", fixed = T)))[1]
   }
-  
+
   ## if the merged master.club does exist, append to it
   if (exists("master.club")){
     temp_master.club <-read.csv(paste0("./rosters/",file), header=TRUE, sep=",")
