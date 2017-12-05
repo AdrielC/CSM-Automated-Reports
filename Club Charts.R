@@ -162,40 +162,98 @@ ga.df <- ga.df[order(as.numeric(ga.df$date)),] # Reorder by date descending
 
 
 ## Create a timeseries of club event attendance
-AttendeesFull %>% 
+AttendeesFull %>%
   filter(ClubEventName != "") %>% filter(StudentName != "") %>%
-  group_by(StartDate) %>% 
+  group_by(date(Date)) %>% 
   summarise(AttendeeSum = n(), Date = first(StartDate)) %>% ungroup() -> countByDay
 
-countByDay$Date <- as.POSIXct(countByDay$Date, format = "%b %d, %Y, %I:%M %p")
+countByDay$Date <- as.POSIXct(countByDay$`date(Date)`, format = "%b %d, %Y, %I:%M %p")
+countByDay <- countByDay[,-1]
+
 ga.df$Date <- as.POSIXct(ga.df$date, format = "%Y%m%d")
 
-countByDay$Date <- round_date(countByDay$Date, "day")
 ga.df$Date <- round_date(ga.df$Date, "day")
+
+countByDay1 <- filter(countByDay, AttendeeSum > 3)
 
 Joined <- left_join(ga.df, countByDay, by = "Date")
 
-### Create your linear models
+Joined1 <- left_join(ga.df, countByDay1, by = "Date")
+
+### Graph and create your linear models 
 par(mfrow=c(2,2))
 plot(Joined$AttendeeSum, Joined$users)
 plot(Joined$AttendeeSum, Joined$avgTimeOnPage)
 plot(Joined$AttendeeSum, Joined$sessions)
 hist(Joined$AttendeeSum)
 
+par(mfrow=c(2,2))
+plot(Joined1$AttendeeSum, Joined1$users)
+plot(Joined1$AttendeeSum, Joined1$avgTimeOnPage)
+plot(Joined1$AttendeeSum, Joined1$sessions)
+hist(Joined1$AttendeeSum)
+
 RegData <- select(Joined, users, avgTimeOnPage, sessions, avgSessionDuration, pageviews, AttendeeSum) %>%
   subset(!(is.na(AttendeeSum)))
 
+RegData1 <- select(Joined1, users, avgTimeOnPage, sessions, avgSessionDuration, pageviews, AttendeeSum)
+
+RegData2 <- select(Joined1, users, avgTimeOnPage, sessions, avgSessionDuration, pageviews, AttendeeSum) %>%
+  subset(!(is.na(AttendeeSum)))
+
+###
+### RegData has all attendee observations and removes rows with NA Attendee observations
+###
 leap <- regsubsets(AttendeeSum~., data = RegData, nbest = 10)
 leapsum <- summary(leap)
 par(mfrow=c(1,1))
 plot(leap, scale = 'adjr2')
 
-mod1 <- lm(AttendeeSum ~ avgSessionDuration + pageviews, data = RegData)
+mod <- lm(AttendeeSum ~ pageviews, data = RegData)
+summary(mod)
+
+modA <- anova(aov(AttendeeSum ~ avgSessionDuration + pageviews + avgSessionDuration*pageviews, data = RegData))
+modA
+
+ggplot(RegData, aes(x = pageviews, y = AttendeeSum)) + 
+  geom_point() +
+  geom_smooth(method = "lm") + 
+  ylab("Daily Club Event Attendees") +
+  xlab("CareerLaunch Pageviews from Events Pages") +
+  ggtitle(label = "Club Event Attendance by Careerlaunch Pageviews")
+
+###
+### RegData1 only has attendee observations with attendees greater than 3
+###
+RegData1$pageviews <- lead(RegData1$pageviews, n = 1L)
+RegData1$avgSessionDuration <- lead(RegData1$avgSessionDuration, n = 1L)
+RegData1$avgTimeOnPage <- lead(RegData1$avgTimeOnPage, n = 1L)
+RegData1$users <- lead(RegData1$users, n = 1L)
+RegData1$sessions <- lead(RegData1$sessions, n = 1L) 
+
+leap1 <- regsubsets(AttendeeSum~., data = RegData1, nbest = 10)
+leapsum1 <- summary(leap1)
+par(mfrow=c(1,1))
+plot(leap1, scale = 'adjr2')
+
+mod1 <- lm(AttendeeSum ~ sessions + pageviews + avgSessionDuration, data = RegData1)
 summary(mod1)
 
-RegData1 <- RegData
-RegData1$pageviews <- lag(RegData1$pageviews, n = 1L)
-RegData1$avgSessionDuration <- lag(RegData1$avgSessionDuration, n = 1L)
-mod2 <- lm(AttendeeSum ~ pageviews + avgSessionDuration, data = RegData1)
+###
+### RegData2 only has attendee observations with attendees greater than 3 and removes rows with NA Attendee observations and leads CL data by 1
+###
+leap2 <- regsubsets(AttendeeSum~., data = RegData2, nbest = 10)
+leapsum2 <- summary(leap2)
+par(mfrow=c(1,1))
+plot(leap2, scale = 'adjr2')
+
+mod2 <- lm(AttendeeSum ~ sessions + pageviews, data = RegData2)
+summary(mod2)
+
+
+
+RegData1$pageviews <- lead(RegData1$pageviews, n = 1L)
+RegData1$avgSessionDuration <- lead(RegData1$avgSessionDuration, n = 1L)
+mod2 <- lm(AttendeeSum ~ pageviews + avgSessionDuration +, data = RegData1)
 summary(mod2)
 
