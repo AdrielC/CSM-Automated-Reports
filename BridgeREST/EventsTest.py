@@ -14,7 +14,11 @@ import time as time
 import re
 import os
 
-PAYLOAD = {'category':'student', 'dateRange':'["2017-05-22","2018-05-21"]', 'page':'1', 'perPage':'500'}
+PAYLOAD = {'category':'student', 'dateRange':'["2017-05-22","2018-05-21"]', 'page':'1', 'perPage':'5', 'customFields':'1'}
 
 r = requests.get('https://byu-csm.symplicity.com/api/public/v1/calendar-events', params = PAYLOAD, headers=setup.HEADERS)
 print(r.json())
+
+
+PAYLOAD = {'field':'majors'}
+r = requests.get('https://byu-csm.symplicity.com/api/public/v1/picklists/students/', params = PAYLOAD, headers=setup.HEADERS)
