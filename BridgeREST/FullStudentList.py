@@ -15,7 +15,7 @@ class RunCall:
         self.payload = payload
 
     def Run(self):
-        
+        print("lmao finish this class please")
 
 
 
