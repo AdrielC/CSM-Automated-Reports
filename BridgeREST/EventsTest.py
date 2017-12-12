@@ -14,6 +14,9 @@ import time as time
 import re
 import os
 
+businessSchoolStudents = ['Accounting Premajor','']
+
+
 PAYLOAD = {'category':'student', 'dateRange':'["2017-05-22","2018-05-21"]', 'page':'1', 'perPage':'5', 'customFields':'1'}
 
 r = requests.get('https://byu-csm.symplicity.com/api/public/v1/calendar-events', params = PAYLOAD, headers=setup.HEADERS)
@@ -26,3 +29,8 @@ r = requests.get('https://byu-csm.symplicity.com/api/public/v1/picklists/student
 print(r.json)
 for major in r.json():
     print(major['value'])
+
+
+PAYLOAD = {'field':'programType'}
+field = PAYLOAD['field']
+r = requests.get('https://byu-csm.symplicity.com/api/public/v1/picklists/students/%s' %field , headers=HEADERS)
