@@ -21,4 +21,8 @@ print(r.json())
 
 
 PAYLOAD = {'field':'majors'}
-r = requests.get('https://byu-csm.symplicity.com/api/public/v1/picklists/students/', params = PAYLOAD, headers=setup.HEADERS)
+field = PAYLOAD['field']
+r = requests.get('https://byu-csm.symplicity.com/api/public/v1/picklists/students/%s' %field , headers=HEADERS)
+print(r.json)
+for major in r.json():
+    print(major['value'])
