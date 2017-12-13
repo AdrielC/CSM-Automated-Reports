@@ -31,6 +31,6 @@ for major in r.json():
     print(major['value'])
 
 
-PAYLOAD = {'field':'programType'}
-field = PAYLOAD['field']
+PAYLOAD = {'customFields':'1'}
+field = 'programType'
 r = requests.get('https://byu-csm.symplicity.com/api/public/v1/picklists/students/%s' %field , headers=HEADERS)
